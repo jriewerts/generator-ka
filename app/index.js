@@ -8,7 +8,13 @@ var Generator = module.exports = function Generator(args, options){
   y.generators.Base.apply(this, arguments);
 
   this.on('end', function () {
-    console.info('end');
+    this.installDependencies({
+      skipMessage: true,
+      skipInstall: false,
+      callback: function () {
+        this.emit(this.options.namespace + ':installDependencies');
+      }.bind(this)
+    });
   });
 };
 
@@ -26,16 +32,13 @@ proto.composeKrakenApp = function () {
         templateModule: 'dustjs',
         UIPackageManager: 'bower',
         cssModule: 'less',
-        jsModule: false,  //todo: file bug and fix for false
+        jsModule: false,  //todo: we need to actually file bug and fix the 'when' resolver in prompts.js to false is a valid value
         'skip-install-npm': true,
         'skip-install-bower': true,
         'skip-install': true
       },
       arguments: this.arguments
   }, {local: require.resolve('generator-kraken/app')}, function(){
-    this.log('****************************************');
-    this.log('* Finished kraken files                *');
-    this.log('****************************************');
     next();
   }.bind(this), this);
 };
@@ -46,8 +49,6 @@ proto.preAngularPrep = function () {
   var appRoot = this.appRoot = path.join(this.destinationRoot(), 'public');
   this.mkdir(appRoot);
   process.chdir(appRoot);
-
-
 };
 
 proto.composeAngularApp = function () {
@@ -60,13 +61,19 @@ proto.composeAngularApp = function () {
     },
     arguments: this.arguments
   }, {local: require.resolve('generator-cg-angular/app')}, function(){
-    this.log('****************************************');
-    this.log('* Finished cg-angular files            *');
-    this.log('****************************************');
     next();
   }.bind(this), this);
 };
 
+proto.postAngular = function () {
+
+  //change root to public for angular
+  var appRoot = this.appRoot = path.join(this.destinationRoot(), '../');
+  this.mkdir(appRoot);
+  process.chdir(appRoot);
+
+};
+
 proto.mergeMagic = function() {
-  this.log('merging here...');
+  //todo
 };
