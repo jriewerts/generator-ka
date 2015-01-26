@@ -1,62 +1,72 @@
 'use strict';
-var yeoman = require('yeoman-generator');
-var chalk = require('chalk');
-var yosay = require('yosay');
+var y = require('yeoman-generator');
+var util = require('util');
+var utils = require('../Utils');
+var path = require('path');
 
-module.exports = yeoman.generators.Base.extend({
-  initializing: function () {
-    this.pkg = require('../package.json');
-  },
+var Generator = module.exports = function Generator(args, options){
+  y.generators.Base.apply(this, arguments);
 
-  prompting: function () {
-    var done = this.async();
+  this.on('end', function () {
+    console.info('end');
+  });
+};
 
-    // Have Yeoman greet the user.
-    this.log(yosay(
-      'Welcome to the astonishing' + chalk.red('Ka') + ' generator!'
-    ));
+util.inherits(Generator, y.generators.Base);
+var proto = Generator.prototype;
 
-    var prompts = [{
-      type: 'confirm',
-      name: 'someOption',
-      message: 'Would you like to enable this option?',
-      default: true
-    }];
 
-    this.prompt(prompts, function (props) {
-      this.someOption = props.someOption;
+proto.composeKrakenApp = function () {
+  var next = this.async();
 
-      done();
-    }.bind(this));
-  },
+  //we are being much more influential here regarding choices with kraken
+  utils.composeWith('kraken:app', {
+      options: {
+        //appName: '', todo: need to be able to influence the app name here
+        templateModule: 'dustjs',
+        UIPackageManager: 'bower',
+        cssModule: 'less',
+        jsModule: false,  //todo: file bug and fix for false
+        'skip-install-npm': true,
+        'skip-install-bower': true,
+        'skip-install': true
+      },
+      arguments: this.arguments
+  }, {local: require.resolve('generator-kraken/app')}, function(){
+    this.log('****************************************');
+    this.log('* Finished kraken files                *');
+    this.log('****************************************');
+    next();
+  }.bind(this), this);
+};
 
-  writing: {
-    app: function () {
-      this.fs.copy(
-        this.templatePath('_package.json'),
-        this.destinationPath('package.json')
-      );
-      this.fs.copy(
-        this.templatePath('_bower.json'),
-        this.destinationPath('bower.json')
-      );
+proto.preAngularPrep = function () {
+
+  //change root to public for angular
+  var appRoot = this.appRoot = path.join(this.destinationRoot(), 'public');
+  this.mkdir(appRoot);
+  process.chdir(appRoot);
+
+
+};
+
+proto.composeAngularApp = function () {
+  var next = this.async();
+
+  utils.composeWith('cg-angular:app', {
+    options: {
+      //appName: '', todo: need to be able to influence the app name here
+      'skip-install': true
     },
+    arguments: this.arguments
+  }, {local: require.resolve('generator-cg-angular/app')}, function(){
+    this.log('****************************************');
+    this.log('* Finished cg-angular files            *');
+    this.log('****************************************');
+    next();
+  }.bind(this), this);
+};
 
-    projectfiles: function () {
-      this.fs.copy(
-        this.templatePath('editorconfig'),
-        this.destinationPath('.editorconfig')
-      );
-      this.fs.copy(
-        this.templatePath('jshintrc'),
-        this.destinationPath('.jshintrc')
-      );
-    }
-  },
-
-  install: function () {
-    this.installDependencies({
-      skipInstall: this.options['skip-install']
-    });
-  }
-});
+proto.mergeMagic = function() {
+  this.log('merging here...');
+};

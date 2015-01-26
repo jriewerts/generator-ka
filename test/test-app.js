@@ -1,27 +1,33 @@
 'use strict';
 
-var path = require('path');
-var assert = require('yeoman-generator').assert;
-var helpers = require('yeoman-generator').test;
-var os = require('os');
 
-describe('ka:app', function () {
-  before(function (done) {
-    helpers.run(path.join(__dirname, '../app'))
-      .inDir(path.join(os.tmpdir(), './temp-test'))
-      .withOptions({ 'skip-install': true })
-      .withPrompt({
-        someOption: true
-      })
-      .on('end', done);
-  });
+var path = require('path'),
+  assert = require('yeoman-generator').assert,
+  helpers = require('yeoman-generator').test,
+  testutil = require('./utils');
 
-  it('creates files', function () {
-    assert.file([
-      'bower.json',
-      'package.json',
-      '.editorconfig',
-      '.jshintrc'
-    ]);
+
+describe('kraken:app', function () {
+
+
+  it('scaffolds dot files', function (done) {
+    var base = testutil.makeBase('app');
+
+    base.options['skip-install-bower'] = true;
+    base.options['skip-install-npm'] = true;
+    base.prompt['dependency:UIPackageManager'] = 'bower';
+
+    testutil.run(base, function (err) {
+      helpers.assertFile([
+        '.bowerrc',
+        '.editorconfig',
+        '.gitignore',
+        '.jshintignore',
+        '.jshintrc',
+        '.nodemonignore'
+      ]);
+
+      done(err);
+    });
   });
 });

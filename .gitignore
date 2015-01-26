@@ -1,1 +1,8 @@
 node_modules/
+.idea/
+npm-debug.log
+.DS_Store
+*.iml
+*.log
+tmp/
+coverage/
