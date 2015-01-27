@@ -38,6 +38,8 @@ utils.quickComposer = function(generatorModule, generator, inDir){
   if(inDir) {
     proto.changeRoot = function () {
 
+      this.log('This ' + generator + ' will be created in ' + inDir + '/');
+
       //change root to public for angular
       var appRoot = this.appRoot = path.join(this.destinationRoot(), inDir);
       this.mkdir(appRoot);
