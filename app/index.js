@@ -75,22 +75,23 @@ proto.postAngular = function () {
 };
 
 proto.showWarning = function() {
-  this.log('****************************************');
-  this.log('*                                      *');
-  this.log('* The next several operations will     *');
-  this.log('* cause conflicts to happen. This is   *');
-  this.log('* because we are merging the two       *');
-  this.log('* generators together. Hit \'y\' in the  *');
-  this.log('* coming prompts.                      *');
-  this.log('*                                      *');
-  this.log('****************************************');
+  this.log('');
+  this.log('    ****************************************');
+  this.log('    *                                      *');
+  this.log('    * The next several operations will     *');
+  this.log('    * cause conflicts to happen. This is   *');
+  this.log('    * because we are merging the two       *');
+  this.log('    * generators together. Hit \'y\' in the  *');
+  this.log('    * coming prompts.                      *');
+  this.log('    *                                      *');
+  this.log('    ****************************************');
+  this.log('');
 };
 
 proto.mergingItTogether = function() {
 
   //bower cleanup
   this.fs.move('public/bower.json', 'bower.json');
-  this.fs.delete('.bowerrc'); //we will replace this later
 
   //merge package.json...
   var pkgKraken = this.fs.readJSON('package.json');
@@ -107,8 +108,10 @@ proto.mergingItTogether = function() {
   this.fs.writeJSON('package.json', pkgKraken);
   this.fs.delete('public/package.json');
 
-  //push static additions to the project
-  this.directory('main/', './')
+  //push static additions or complete file changes to the project
+  this.directory('main/', './');
 
-  
+
+
+
 };
