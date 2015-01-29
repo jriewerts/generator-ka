@@ -1,13 +1,13 @@
 {
   "name": "generator-ka",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Yeoman generator",
   "license": "MIT",
   "main": "app/index.js",
   "repository": "jriewerts/generator-ka",
   "author": {
     "name": "John Riewerts",
-    "email": "",
+    "email": "jriewerts@gmail.com",
     "url": "https://github.com/jriewerts"
   },
   "engines": {
@@ -17,7 +17,19 @@
     "test": "mocha"
   },
   "files": [
-    "app"
+    "app",
+    "Utils.js",
+    "controller",
+    "locale",
+    "model",
+    "ng-controller",
+    "ng-directive",
+    "ng-filter",
+    "ng-modal",
+    "ng-module",
+    "ng-partial",
+    "ng-service",
+    "template"
   ],
   "keywords": [
     "yeoman-generator"
