@@ -35,7 +35,7 @@
     "yeoman-generator"
   ],
   "dependencies": {
-    "chalk": "^0.5.0",
+    "chalk": "^1.0.0",
     "generator-cg-angular": "^3.2.0",
     "generator-kraken": "^1.1.2",
     "q": "^1.1.2",
